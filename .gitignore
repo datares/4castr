@@ -1,0 +1,10 @@
+weights/
+stories/
+logs/
+images/
+data/
+pretrained_models/
+__pycache__/
+.DS_Store
+.vscode/
+saved_scaler.pkl
