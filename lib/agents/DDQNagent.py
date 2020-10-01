@@ -14,7 +14,7 @@ class DDQNAgent(object):
     Initializes a Double DQN agent.
     
     Args:
-        state_size (int): Size of the state space.
+        state_size (int): Size of the state vector.
         action_size (int): Size of the action vector.
         mode (string): Model purpose (training, finetuning, validation, testing).
     
