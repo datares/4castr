@@ -3,6 +3,16 @@ import logging
 import colorlog
 
 def init_logger(dunder_name, show_debug=False) -> logging.Logger:
+    """
+    Initializes a logger.
+    
+    Args:
+        dunder_name (string): Name of logger to return.
+        show_debug (bool): Debug setting to pass to logger
+    
+    Returns:
+        Logger object
+    """
     log_format = (
         '%(asctime)s - '
         '%(name)s - '

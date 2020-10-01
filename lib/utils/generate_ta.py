@@ -1,11 +1,29 @@
 from ta import *
 import pandas as pd
 def create_ta(df):
+    """
+    Creates a technical analysis dataframe with relevant OHLC features.
+    
+    Args:
+        df (pandas.DataFrame): DataFrame from which to add data.
+    
+    Returns:
+        Formatted DataFrame.
+    """
     print("Loaded CSV...")
     df = add_all_ta_features(df, "open", "high", "low", "close", "volume", fillna=True) 
     print("Added TA Features...")
     return df
 def clean_ta(df):
+    """
+    Cleans a dataframe by removing irrelevant columns.
+    
+    Args:
+        df (pandas.DataFrame): DataFrame from which to delete columns.
+    
+    Returns:
+        Formatted DataFrame.
+    """
     df = df.reset_index(drop=True)
     del df['close']
     del df['ticker']

@@ -15,6 +15,15 @@ OHLC_URL = 'https://rest.coinapi.io/v1/ohlcv/BITSTAMP_SPOT_BTC_USD/latest?period
 COINAPI_KEY = {'X-CoinAPI-Key' : '73034021-0EBC-493D-8A00-E0F138111F41'}
 
 def get_live_OHLCV():
+  """
+  Gets the latest OHLC data for bitcoin, stores it in a dict, and returns it.
+  
+  Args:
+      None
+  
+  Returns:
+      Dict containing latest BTC OHLC data.
+  """  
   d = {'price_open': [], 'price_low': [],  'price_high': [], 'price_close': [], 'volume_traded': [] }
 
   response = requests.get(OHLC_URL, headers=COINAPI_KEY)
@@ -31,9 +40,21 @@ def get_live_OHLCV():
   return latest_json_data
 
 class LiveEnv():
-
+  """
+  Live environment for trading stocks.
+  """
   def __init__(self, init_invest=1000, action_space=30, state_space=63):
-    
+    """
+    Initializes a SimulatedEnv.
+        
+    Args:
+        init_invest (int): Starting budget. Defaults to 1000.
+        action_space (int): Size of the action space. Defaults to 30.
+        state_space (int): Size of the state space. Defaults to 63.
+        
+    Returns:
+        None
+    """
     # Amount of money we are initially putting in. 
     self.init_invest = init_invest
 
@@ -51,6 +72,15 @@ class LiveEnv():
     self._reset()
 
   def _reset(self):
+    """
+    Resets the environment.
+    
+    Args:
+        None
+    
+    Returns:
+        List containing current state.
+    """
     # Re initialize crypto owned, cash in the hand, and current state. 
     self.crypto_owned = 0
     self.cash_in_hand = self.init_invest
@@ -58,6 +88,15 @@ class LiveEnv():
     return self._get_obs()
 
   def _step(self, action):
+    """
+    Takes a step by performing an action.
+        
+    Args:
+        action (int): Action to be taken.
+        
+    Returns:
+        Tuple containing the new state, reward after taking the action, and a dict containing action information.
+    """
     assert self.action_space.contains(action)
     # Get OHLCV for crypto. You want the most recent and column 0 is the open price. 
     self.open_price = get_live_OHLCV().iloc[0, 0]
@@ -80,6 +119,15 @@ class LiveEnv():
     return self._get_obs(), reward, info
 
   def _get_obs(self):
+    """
+    Gets the current state.
+        
+    Args:
+        None.
+        
+    Returns:
+        List containing the state.
+    """
     obs = []
     data = get_live_OHLCV()
     live_ta = add_all_ta_features(data, "price_open", "price_high", "price_low", "price_close","volume_traded", fillna=True)
@@ -89,10 +137,27 @@ class LiveEnv():
     return obs
 
   def _get_val(self):
+    """
+    Gets the agent's net worth.
+        
+    Args:
+        None.
+        
+    Returns:
+        (Float) agent's net worth.
+    """
     return np.sum(self.crypto_owned * self.open_price) + self.cash_in_hand
 
   def _trade(self, action):
-    
+    """
+    Buys or sells a stock and updates the buying power of the agent accordingly.
+        
+    Args:
+        action (int): Action taken (buy, sell, or hold).
+        
+    Returns:
+        None
+    """
     # Compute price of crypto in dollars and a dollar of crypto
     price_dollar = self.open_price
     price_crypto = self.cash_in_hand / price_dollar
