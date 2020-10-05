@@ -2,6 +2,7 @@ import os
 import logging
 import colorlog
 
+
 def init_logger(dunder_name, show_debug=False) -> logging.Logger:
     """
     Initializes a logger.
@@ -20,13 +21,13 @@ def init_logger(dunder_name, show_debug=False) -> logging.Logger:
         '%(levelname)s - '
         '%(message)s'
     )
-   # bold_seq = '\033[1m'
-   # colorlog_format = (
-   #     f'{bold_seq} '
-   #     '%(log_color)s '
-   #     f'{log_format}'
-   # )
-   # colorlog.basicConfig(format=colorlog_format)
+    # bold_seq = '\033[1m'
+    # colorlog_format = (
+    #     f'{bold_seq} '
+    #     '%(log_color)s '
+    #     f'{log_format}'
+    # )
+    # colorlog.basicConfig(format=colorlog_format)
     logging.getLogger('tensorflow').disabled = True
     logger = logging.getLogger(dunder_name)
 

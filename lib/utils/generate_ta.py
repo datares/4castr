@@ -1,5 +1,7 @@
 from ta import *
 import pandas as pd
+
+
 def create_ta(df):
     """
     Creates a technical analysis dataframe with relevant OHLC features.
@@ -14,6 +16,8 @@ def create_ta(df):
     df = add_all_ta_features(df, "open", "high", "low", "close", "volume", fillna=True) 
     print("Added TA Features...")
     return df
+
+    
 def clean_ta(df):
     """
     Cleans a dataframe by removing irrelevant columns.
@@ -51,7 +55,7 @@ def clean_ta(df):
     del df['trend_ichimoku_b']
     del df['trend_visual_ichimoku_b']
     del df['trend_visual_ichimoku_a']
-    #del df['momentum_kama']
+    # del df['momentum_kama']
     del df['momentum_wr']
     del df['momentum_stoch_signal']
     del df['momentum_stoch']

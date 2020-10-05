@@ -18,7 +18,8 @@ ACTIONS = ["SELL", "HOLD", "BUY"]
 
 def real_time_yahoo(stock):
     """
-    Generates and formats a pandas DataFrame containing OHLC data of a chosen stock up through the current day.
+    Generates and formats a pandas DataFrame containing OHLC data of a 
+    chosen stock up through the current day.
     
     Args:
         stock (string): Ticker representing a stock.

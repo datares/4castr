@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-#plt.show()
+# plt.show()
+
 
 def start_plot(p_vals, open_prices):
     """TODO"""
@@ -18,6 +19,7 @@ def start_plot(p_vals, open_prices):
     line1, _ = ax1.plot(x, y1, 'r-')
     line2, _ = ax1.plot(x, y2, 'r-') 
     
+
 def update_plot(fig, line1, line2, p_vals, open_prices):
     """TODO"""
     fig.canvas.flush_events()
