@@ -6,25 +6,30 @@ import tensorflow as tf
 import time
 from tensorflow.keras.callbacks import TensorBoard
 import random
-#...
+
+
+# ...
 
 def generate_actions():
-  """
+    """
   Generates the array of tuples of actions, 
   since trader should have access to an amount to trade and and action to trade.
   """
-  actions = []
-  for i in range(3):
-      for j in range(10):
-        actions.append([i, j])
-  return actions
+    actions = []
+    for i in range(3):
+        for j in range(10):
+            actions.append([i, j])
+    return actions
+
 
 def clamp(minimum, x, maximum):
     return max(minimum, min(x, maximum))
 
+
 def maybe_make_dir(directory):
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
 
 # Own Tensorboard class
 class ModifiedTensorBoard(TensorBoard):
@@ -54,7 +59,7 @@ class ModifiedTensorBoard(TensorBoard):
         summary_value.simple_value = logs['acc']
         summary_value.tag = "acc"
         self.writer.add_summary(summary, self.step)
-        
+
     # Overrided
     # We train for one batch only, no need to save anything at epoch end
     def on_batch_end(self, batch, logs=None):
@@ -77,20 +82,20 @@ class ModifiedTensorBoard(TensorBoard):
             self.writer.add_summary(summary, self.step)
             i += 1
 
+
 # These functions setup a static_environment
 def dir_setup(mode):
-  # UTIL FUNCTION --> creates directories
-  
-  maybe_make_dir('stories')
-  maybe_make_dir('data')
-  
-  # Define a timestamp for currentl model
-  timestamp = time.strftime('%Y%m%d%H%M')
+    # UTIL FUNCTION --> creates directories
 
-  return timestamp
+    maybe_make_dir('stories')
+    maybe_make_dir('data')
+
+    # Define a timestamp for currentl model
+    timestamp = time.strftime('%Y%m%d%H%M')
+
+    return timestamp
 
 
 def live_env_setup(initial_invest, state_size, action_size):
-  env = LiveEnv(initial_invest)
-  return env, state_size, action_size 
-
+    env = LiveEnv(initial_invest)
+    return env, state_size, action_size

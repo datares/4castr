@@ -1,1 +1,1 @@
-TOTAL_DATA_PATH = "./data/AAPL_2018_2020_1hr.csv"
+TOTAL_DATA_PATH = "data/AAPL_2018_2020_1hr.csv"
