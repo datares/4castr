@@ -21,7 +21,7 @@ from config import TOTAL_DATA_PATH
 
 # GLOB VARIABLES
 ACTIONS = ["SELL", "HOLD", "BUY"]
-MINI_DATA_PATH = "./data/AAPL_2018_2020_1hr_ROLLING.csv" # rolling csv dataframe.
+MINI_DATA_PATH = "./data/AAPL_2018_2020_1hr_ROLLING_NO_VOLUME_OR_Index.csv"  # rolling csv dataframe.
 
 
 def manual_agent_params(SOMETHING: int):
