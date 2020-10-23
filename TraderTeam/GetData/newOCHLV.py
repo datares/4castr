@@ -26,14 +26,15 @@ def concatenate():
         data = pd.read_csv(f"/Users/colincurtis/4castr/newData/AAPL_AV{n}.csv")
         df = df.append(data, ignore_index=True)
     df = df[::-1]
-    df.reset_index(inplace=True, drop="index")
+    df.columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
+    df.reset_index(inplace=True, drop=["index", "Date"])
     return df
 
 
 highFreqData = concatenate()
+# highFreqData.drop(columns="Date", axis=0, inplace=True)
+# print(highFreqData["Date"])
 
-# highFreqData.set_index(range(len(highFreqData)), inplace=True)
-# highFreqData = highFreqData.reindex(index=highFreqData.index[::-1])
-print(highFreqData)
+# print(highFreqData)
 
 # highFreqData.to_csv("/Users/colincurtis/4castr/newData/AAPL_AV.csv")

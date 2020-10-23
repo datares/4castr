@@ -4,6 +4,7 @@ import pandas as pd
 import optuna
 from yahoo_fin import stock_info as si
 import coloredlogs
+from sklearn.model_selection import train_test_split
 
 from lib.utils.logger import init_logger
 from lib.utils.generate_ta import create_ta, clean_ta
@@ -21,18 +22,18 @@ from config import TOTAL_DATA_PATH
 
 # GLOB VARIABLES
 ACTIONS = ["SELL", "HOLD", "BUY"]
-MINI_DATA_PATH = "./data/AAPL_TA_No_Bollinger.csv"  # rolling csv dataframe.
+MINI_DATA_PATH = "./newData/AAPL_normalized.csv"  # rolling csv dataframe.
 
 
 def manual_agent_params(SOMETHING: int):
     return {
-        'n_steps': 1024,
-        'gamma': 0.9391973108460121,
-        'learning_rate': 0.00010179263199758284,
-        'ent_coef': 0.0001123894292050861,
+        'n_steps': 10000,
+        'gamma': 0.99,
+        'learning_rate': .00010179263199758284,  # was .00010179263199758284
+        'ent_coef': 0.01,
         'cliprange': 0.2668120684510983,
-        'noptepochs': 5,
-        'lam': 0.8789545362092943
+        'noptepochs': 10,  # changed from 5 to 30
+        'lam': 0.95
     }
 
 
@@ -47,15 +48,16 @@ def historical_yahoo(stock):
 
 def train_val_test_split(path):
     data = pd.read_csv(path)
-    train_data = data.iloc[:-400, 1:]
-    validation_data = data.iloc[-400:-50, 1:]
-    test_data = data.iloc[-50:, 1:]
-    return train_data, validation_data, test_data
+    # train_data, test_data = train_test_split(data, train_size=.9, test_size=.1, shuffle=False)
+    train_data = data.iloc[:-10000, 1:]
+    test_data = data.iloc[-10000:-2500, 1:]
+    validation_data = data.iloc[-2500:, 1:]
+    return train_data, validation_data,  test_data
 
 
 def train_val_test_split_finetune(data):
-    train_data = data.iloc[:-2000, :]
-    test_data = data.iloc[-2000:, :]
+    train_data = data.iloc[:-10000, :]
+    test_data = data.iloc[-10000:, :]
     return train_data, test_data
 
 
@@ -96,7 +98,7 @@ class Static_Session:
         self.timestamp = dir_setup(mode)
         self.env = None
         self.brain = brain
-        self.n_steps_per_eval = 10000000
+        self.n_steps_per_eval = 100000000
         self.logger = init_logger(__name__, show_debug=True)
         self.stock = stock
         coloredlogs.install(level='TEST')
