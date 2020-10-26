@@ -10,7 +10,7 @@ def make_csv():
                   "symbol": "AAPL",
                   "interval": '1min',
                   "datatype": "csv",
-                  "slice": f"year=1month{n}",
+                  "slice": f"year1month{n}",
                   "apikey": apikey}
         response = requests.get(url, params)
         with open(f"/Users/colincurtis/4castr/newData/AAPL_AV{n}.csv", "wb") as f:
@@ -28,7 +28,7 @@ def make_csv():
 
 
 def concatenate(num_files: int):  # take range of csv files to create dataframe
-    if num_files > 24 or num_files < 2:
+    if num_files > 25 or num_files < 2:
         raise Exception("You can only input months in the range 2-24")
     else:
         df = pd.read_csv('/Users/colincurtis/4castr/newData/AAPL_AV1.csv')

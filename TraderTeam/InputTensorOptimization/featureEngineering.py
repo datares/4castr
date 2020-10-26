@@ -57,7 +57,7 @@ def momentum(df):  # TODO: fix error: series are mutable objects and thus they c
     return df
 
 
-def intraday_change(df):  #
+def intraday_change(df):
     mean_volume = df['Volume'].mean()
     intra_day_change = df["Open"] - df["Close"]
     intra_day_change = intra_day_change.divide(df["Volume"].divide(mean_volume))
