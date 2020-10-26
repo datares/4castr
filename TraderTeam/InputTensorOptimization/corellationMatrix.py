@@ -7,21 +7,6 @@ stockData.columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volum
 rollingWindow = 30
 dropIndex = list(range(rollingWindow - 1))
 
-# droppedDF = stockData.rolling(rollingWindow)
-# .mean().fillna(0).drop(index=dropIndex, columns='Volume', inplace=False).round(2)
-
-momentum = stockData["High"].rolling(10).mean().dropna(axis=0)\
-    .divide(stockData["High"].rolling(30).mean().dropna(axis=0))
-momentum.columns = "Momentum"
-
-meanVolume = stockData["Volume"].mean()  # roughly 4.5e8
-
-intraDayChange = stockData["Open"] - stockData["Close"]
-intraDayChange = intraDayChange.divide(stockData["Volume"].divide(meanVolume))
-stockData.insert(len(stockData.columns), "Day Change", intraDayChange)
-
-
-stockData.insert(len(stockData.columns), "Momentum", momentum)
 stockData.dropna(axis=0, inplace=True)
 stockData.round(3)
 # print(stockData)
@@ -34,9 +19,6 @@ def plotVar(df, column: str):  # plot a single variable, raw data
     plt.ylabel(column)
     plt.title(f"Plot for {column}")
     plt.show()
-
-
-# plotVar("Day Change")
 
 
 def plotRollingVar(df, column: str, window: int):  # plot a single variable, using a rolling window

@@ -42,12 +42,27 @@ def z_score(df, window):  # normalize our data to workable numbers using z-score
     return z
 
 
-taData = makeFilter(highFreqData)
+# taData = makeFilter(highFreqData)
 # taData.drop(columns=["Date"], inplace=True)
-taData.drop(columns=["Date", "Open", "High", "Low", "Close", "Volume"], inplace=True)
-taData = z_score(taData, 200)
+# taData.drop(columns=["Date", "Open", "High", "Low", "Close", "Volume"], inplace=True)
+# taData = z_score(taData, 200)
 # taData.to_csv("/Users/colincurtis/4castr/newData/AAPL_normalized.csv")
-plot_scatter_matrix(taData)
+
+
+def momentum(df):  # TODO: fix error: series are mutable objects and thus they cannot be hashed.
+    momentum_short = df["Close"].rolling(10).mean().dropna(axis=0)
+    momentum_long = df["High"].rolling(30).mean().dropna(axis=0)
+    momentum_ind = momentum_short.divide(momentum_long)
+    df.insert(len(df.columns), momentum_ind, 'Momentum')
+    return df
+
+
+def intraday_change(df):  #
+    mean_volume = df['Volume'].mean()
+    intra_day_change = df["Open"] - df["Close"]
+    intra_day_change = intra_day_change.divide(df["Volume"].divide(mean_volume))
+    df.insert(len(df.columns), "Day Change", intra_day_change)
+    return df
 
 
 def fourier_plot(df, column: str):
@@ -63,15 +78,15 @@ def fourier_plot(df, column: str):
     plt.show()
 
 
-def fourierPlotAllCols():
-    for column in taData.columns:
-        fourier_plot(taData, column)
+def fourierPlotAllCols(df):
+    for column in df.columns:
+        fourier_plot(df, column)
 
 
-def histPlot():
-    for column in taData.columns:
+def histPlot(df):
+    for column in df.columns:
         plt.title(f"histogram for {column}")
-        plt.hist(taData[column], bins=100)
+        plt.hist(df[column], bins=100)
         plt.show()
 
 
