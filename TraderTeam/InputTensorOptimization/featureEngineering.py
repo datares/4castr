@@ -5,9 +5,10 @@ import ta.volume
 from scipy import fft
 import numpy as np
 import matplotlib.pyplot as plt
-
+import pandas as pd
+from scipy.signal import savgol_filter
 from TraderTeam.GetData.newOCHLV import highFreqData
-from TraderTeam.InputTensorOptimization.corellationMatrix import plot_scatter_matrix
+from scipy.stats import normaltest
 
 
 def makeFilter(df):
@@ -42,11 +43,32 @@ def z_score(df, window):  # normalize our data to workable numbers using z-score
     return z
 
 
-# taData = makeFilter(highFreqData)
-# taData.drop(columns=["Date"], inplace=True)
-# taData.drop(columns=["Date", "Open", "High", "Low", "Close", "Volume"], inplace=True)
-# taData = z_score(taData, 200)
+taData = makeFilter(highFreqData)
+taData.drop(columns=["Date"], inplace=True)
+taData.drop(columns=["Open", "High", "Low", "Close", "Volume"], inplace=True)
+taData = z_score(taData, 200)
+# print(taData)
 # taData.to_csv("/Users/colincurtis/4castr/newData/AAPL_normalized.csv")
+# testRawData = z_score(highFreqData, 100)
+# testRawData.to_csv("/Users/colincurtis/4castr/newData/rawBaseline.csv"
+
+
+def smooth_cols(df):
+    new_df = pd.DataFrame(columns=df.columns)
+    for col in new_df.columns:
+        smoothed = savgol_filter(df[col], window_length=131, polyorder=3)
+        new_df[col] = smoothed
+    return new_df
+
+
+def plot_cols(df1, df2):  # df1 should be raw, df2 smoothed
+    for col in df1.columns:
+        plt.plot(df1[col], label="raw")
+        plt.plot(df2[col], label="smoothed")
+        plt.xlabel('Steps')
+        plt.ylabel(col)
+        plt.legend()
+        plt.show()
 
 
 def momentum(df):  # TODO: fix error: series are mutable objects and thus they cannot be hashed.
@@ -90,3 +112,22 @@ def histPlot(df):
         plt.show()
 
 
+def normality(df):
+    results = pd.DataFrame(columns=["test_statistic", "p_value"])
+    for col in df.columns:
+        test_statistic, p_value = normaltest(df[col])
+        results = results.append({"test_statistic": test_statistic, "p_value": p_value}, ignore_index=True)
+    results.index = df.columns
+    return results
+
+
+if __name__ == "__main__":
+    smooth = smooth_cols(taData)
+    plot_cols(taData, smooth)
+    histPlot(taData)
+    histPlot(smooth)
+    # this smooth data is much nicer, we removed a lot of noise and made it more normally distributed.
+    # Aroon was bimodal without smoothing but normal after smoothing
+
+    print(normality(taData))
+    print(normality(smooth))
