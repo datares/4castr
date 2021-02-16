@@ -16,9 +16,9 @@ maybe_make_dir("./{}/{}".format("images", args.file[:-4]))
 
 data = pd.read_csv(args.file)
 
-action_value = data.iloc[:,0].values
-portfolio_value = data.iloc[:,4].values
-stock_value = data.iloc[:,5].values
+action_value = data.iloc[:, 0].values
+portfolio_value = data.iloc[:, 4].values
+stock_value = data.iloc[:, 5].values
 
 episodes = []
 episodes_actions = []
@@ -45,17 +45,17 @@ with plt.style.context('Solarize_Light2'):
 
         for i in range(len(episodes[ep_num])):
             if episodes_actions[ep_num][i] == "BUY":
-                plt.scatter(i, episodes[ep_num][i], color="yellow" ,marker=".", label='BUY')
+                plt.scatter(i, episodes[ep_num][i], color="yellow", marker=".", label='BUY')
             if episodes_actions[ep_num][i] == "SELL":
-                plt.scatter(i, episodes[ep_num][i], color="green",marker=".",label='SELL')
+                plt.scatter(i, episodes[ep_num][i], color="green", marker=".", label='SELL')
             if episodes_actions[ep_num][i] == "HOLD":
-                plt.scatter(i, episodes[ep_num][i], color="grey",marker=".",label='HOLD')
+                plt.scatter(i, episodes[ep_num][i], color="grey", marker=".", label='HOLD')
 
         plt.subplot(2, 1, 2)
         plt.grid()
         plt.plot(episodes_stocks[ep_num][1:])
         
-        plt.savefig("./{}/{}/{}.png".format("images",args.file[:-4],ep_num) , dpi=300)
+        plt.savefig("./{}/{}/{}.png".format("images",args.file[:-4], ep_num), dpi=300)
 
 
 

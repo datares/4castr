@@ -8,6 +8,15 @@ from lib.utils.added_tools import generate_actions, clamp
 
 
 def get_scaler(mode, data):
+    """
+    Initializes or loads an sklearn MinMaxScaler, fits it to the data, and pickles it if training or optimizing. For more information on sklearn scalers, see the documentation.
+    
+    Args:
+        mode (string): Whether training or optimizing, or testing.
+    
+    Returns:
+        The generated/loaded MinMaxScaler.
+    """
     scaler = None
     if mode == "train" or mode == "optimize":
         scaler = MinMaxScaler()
@@ -18,9 +27,23 @@ def get_scaler(mode, data):
 
 
 class SimulatedEnv(gym.Env):
+    """
+    Simulated environment for trading stocks. Extends gym.Env.
+    """
     metadata = {'render.modes': ['human', 'system', 'none']}
 
     def __init__(self, data, init_invest=1000, mode="test"):
+        """
+        Initializes a SimulatedEnv.
+        
+        Args:
+            data (pandas.DataFrame): DataFrame consisting of OHLC data of the user's choice.
+            init_invest (int): Starting budget. Defaults to 1000.
+            mode (string): Whether we are training, finetuning, or testing the model. Defaults to 'test'.
+        
+        Returns:
+            None
+        """
         super(SimulatedEnv, self).__init__()
         self.dataset = data
         self.mode = mode
@@ -49,6 +72,16 @@ class SimulatedEnv(gym.Env):
     #   return [seed]
 
     def reset(self):
+        """
+        Resets the environment. 
+        
+        Args:
+            None
+        
+        Returns:
+            Current state as a list.
+            
+        """
         limit = len(self.dataset) - self.n_steps
         self.cur_step = random.randrange(limit)
         self.finish_step = self.cur_step + self.n_steps
@@ -59,6 +92,15 @@ class SimulatedEnv(gym.Env):
         return self._get_obs()
 
     def step(self, action):
+        """
+        Takes a step by performing an action.
+        
+        Args:
+            action (int): Action to be taken.
+        
+        Returns:
+            Tuple containing the new state, reward after taking the action, bool describing whether the agent is done taking steps, and a dict containing action information.
+        """
         assert self.action_space.contains(action)
         prev_val = self._get_val()
         self.cur_step += 1
@@ -85,6 +127,15 @@ class SimulatedEnv(gym.Env):
         return self._get_obs(), reward, done, info
 
     def _get_obs(self):
+        """
+        Gets the current state and scales it.
+        
+        Args:
+            None.
+        
+        Returns:
+            List containing the scaled state.
+        """
         obs = []
         for element in self.current_state:
             obs.append(element)
@@ -93,10 +144,28 @@ class SimulatedEnv(gym.Env):
         return self.scaler.transform([obs])
 
     def _get_val(self):
+        """
+        Gets the agent's net worth.
+        
+        Args:
+            None.
+        
+        Returns:
+            (Float) agent's net worth.
+        """
         open_price = self.current_state[0]
         return np.sum(self.owned_stocks * open_price) + self.cash_in_hand
 
     def _trade(self, action):
+        """
+        Buys or sells a stock and updates the buying power of the agent accordingly.
+        
+        Args:
+            action (int): Action taken (buy, sell, or hold).
+        
+        Returns:
+            None
+        """
         combo = self.actions[action]
         move = combo[0]
         amount = combo[1]
@@ -120,6 +189,15 @@ class SimulatedEnv(gym.Env):
             self.owned_stocks += amount
 
     def render(self, mode='system'):
+        """
+        Prints the price of a stock and the net worth of the agent.
+        
+        Args:
+            mode (string) : #TODO
+        
+        Returns:
+            List containing the scaled state.
+        """
         if mode == 'system':
             print('Price: ' + str(self.current_state[0]))
             print('Net worth: ' + str(self._get_val))
